@@ -6,15 +6,19 @@ const Url = require("./models/urlSchema");
 const ejs=require("ejs")
 const path=require("path");
 const staticRouter = require("./router/staticRouter");
-
+const userRouter = require("./router/userRouter");
+const cookieParser=require("cookie-parser");
+const { restrictToLoggedUserOnly, checkAuth } = require("./middleware/auth");
 
 dotenv.config();
 
 const app=express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
-app.use("/url",urlRouter)
-app.use("/",staticRouter);
+app.use("/url",restrictToLoggedUserOnly,urlRouter)
+app.use("/",checkAuth,staticRouter);
+app.use("/user",userRouter);
 
 app.set('view engine', "ejs");
 app.set("views",path.resolve("./views"));

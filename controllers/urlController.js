@@ -12,6 +12,7 @@ async function shortUrl(req,res,next){
         shortId,
         redirectUrl:url,
         visitHistory:[],
+        createdBy:req.user._id,
     })
     return res.render("home.ejs",{id:shortId})
     }
